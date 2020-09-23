@@ -5,8 +5,8 @@ query {
     allLists {
       data {
         _id
-        _ts
         title
+        slug
         comments {
           data {
             _id
@@ -32,6 +32,6 @@ exports.handler = async () => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ notes: data.allLists.data }),
+    body: JSON.stringify({ lists: data.allLists.data }),
   };
 };

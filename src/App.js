@@ -1,74 +1,114 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
-import "./App.css";
+import { Router, Link } from "@reach/router";
 
-function App() {
+import ReactMarkdown from "react-markdown";
+
+import CodeBlock from "./CodeBlock";
+import Component from "./Test";
+export default function App() {
   const [status, setStatus] = useState("loading");
-  const [notes, setNotes] = useState(null);
-  const [text, setText] = useState("");
+  const [lists, setLists] = useState([]);
 
-  const reloadNotes = () => setStatus("loading");
-
+  const getLists = async () => {
+    const response = await fetch("/api/get-all-lists");
+    const data = await response.json();
+    setLists(data.lists);
+    setStatus("loaded");
+  };
   useEffect(() => {
-    let canceled = false;
     if (status !== "loading") return;
-    axios("/api/get-all-notes").then((result) => {
-      if (canceled === true) return;
-      if (result.status !== 200) {
-        console.error("Error loading notes");
-        console.error(result);
-        return;
-      }
-      setNotes(result.data.notes);
-      setStatus("loaded");
-    });
-    return () => {
-      canceled = true;
-    };
+    getLists();
   }, [status]);
-  function textInput(e) {
-    setText(e.target.value);
-  }
-  async function submit(e) {
-    e.preventDefault();
-    if (text === "") return;
-
-    const resp = await axios.post("/api/create-note", { text });
-    console.log(resp);
-    setText("");
-    reloadNotes();
-  }
-  async function deleteNote(id) {
-    await axios.post("/api/delete-note", { id });
-    reloadNotes();
-  }
   return (
     <div className="App">
-      <ul>
-        {notes ? (
-          <ul>
-            {notes.map((note) => (
-              <li key={note._id}>
-                {" "}
-                {note.text}{" "}
-                <button onClick={() => deleteNote(note._id)}>Delete</button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Loading notes...</p>
-        )}
-
-        <li>
-          <form onSubmit={submit}>
-            <input type="text" name="text" value={text} onChange={textInput} />
-            <input type="submit" />
-          </form>
-        </li>
-      </ul>
+      <Nav lists={lists} />
+      <Router>
+        <Home path="/" />
+        <List lists={lists} path="list/:slug" />
+      </Router>
     </div>
   );
 }
+const Nav = ({ lists }) => {
+  return (
+    <nav className="Nav">
+      {lists.map((list) => {
+        return (
+          <Link key={list._id} to={`/list/${list.slug}`}>
+            {list.title}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+};
+const Home = () => {
+  const [firstVisit, setFirstVisit] = useState(false);
+  const [userName, setUserName] = useState("");
+  useEffect(() => {
+    if (!localStorage.getItem("username")) {
+      setFirstVisit(true);
+    }
+  }, []);
+  function submit(e) {
+    e.preventDefault();
+    if (userName.length < 3) {
+      return; //TODO: proper validation
+    }
+    localStorage.setItem("username", userName);
+    setFirstVisit(false);
+  }
+  return (
+    <div className="Home">
+      {firstVisit ? (
+        <>
+          <h1>
+            Hej, kan se det er første gang du er her, hvad må jeg kalde dig?
+          </h1>
+          <form onSubmit={submit}>
+            <input
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+            <button>Gem!</button>
+          </form>
+        </>
+      ) : (
+        <h1>Velkommen tilbage {localStorage.getItem("username")}</h1>
+      )}
+    </div>
+  );
+};
+const List = ({ lists, slug }) => {
+  const thisList = lists.find((list) => list.slug === slug);
 
-export default App;
+  if (!thisList) {
+    return <></>;
+  }
+  return (
+    <main className="List">
+      <h1>{thisList.title}</h1>
+      {thisList.comments.data.map((comment) => {
+        return <Comment key={comment._id} data={comment} />;
+      })}
+    </main>
+  );
+};
+const Comment = ({ data }) => {
+  console.log(data);
+  return (
+    <article>
+      <h2>{data.author}</h2>
+
+      <StyledMarkdown content={data.comment} />
+      {data.author === localStorage.getItem("username") && (
+        <button>Delete</button>
+      )}
+    </article>
+  );
+};
+const StyledMarkdown = ({ content }) => {
+  return <ReactMarkdown source={content} renderers={{ code: CodeBlock }} />;
+};

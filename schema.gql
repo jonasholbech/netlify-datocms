@@ -10,6 +10,7 @@ type Comment {
 
 type List {
   title: String!
+  slug: String!
   comments: [Comment] @relation
 }
 
