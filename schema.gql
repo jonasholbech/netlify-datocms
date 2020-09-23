@@ -2,6 +2,19 @@ type Note {
   text: String!
 }
 
+type Comment {
+  comment: String!
+  author: String!
+  list: List
+}
+
+type List {
+  title: String!
+  comments: [Comment] @relation
+}
+
 type Query {
   allNotes: [Note!]!
+  allComments: [Comment!]
+  allLists: [List!]
 }

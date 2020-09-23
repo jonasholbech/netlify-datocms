@@ -7,6 +7,7 @@ function App() {
   const [status, setStatus] = useState("loading");
   const [notes, setNotes] = useState(null);
   const [text, setText] = useState("");
+
   const reloadNotes = () => setStatus("loading");
 
   useEffect(() => {
