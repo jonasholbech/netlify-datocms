@@ -5,7 +5,7 @@ import { Router, Link } from "@reach/router";
 import ReactMarkdown from "react-markdown";
 
 import CodeBlock from "./CodeBlock";
-import Component from "./Test";
+
 export default function App() {
   const [status, setStatus] = useState("loading");
   const [lists, setLists] = useState([]);
