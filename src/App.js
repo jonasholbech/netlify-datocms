@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import logo from "./logo.svg";
+
 import "./App.css";
 
 function App() {
@@ -39,7 +39,7 @@ function App() {
     reloadNotes();
   }
   async function deleteNote(id) {
-    const resp = await axios.post("/api/delete-note", { id });
+    await axios.post("/api/delete-note", { id });
     reloadNotes();
   }
   return (
