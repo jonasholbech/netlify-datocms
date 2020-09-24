@@ -85,7 +85,7 @@ const List = ({ lists, slug }) => {
     if (!localStorage.getItem("username")) {
       navigate(`/`);
     }
-  }, []);
+  }, [navigate]);
   const thisList = lists.find((list) => list.slug === slug);
 
   if (!thisList) {
