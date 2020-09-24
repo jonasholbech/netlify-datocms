@@ -6,7 +6,12 @@ import CodeBlock from "./CodeBlock";
 export default function App() {
   const [status, setStatus] = useState("loading");
   const [lists, setLists] = useState([]);
+  const [username, setUsername] = useState(localStorage.getItem("username"));
 
+  const setUsernameCallback = (un) => {
+    setUsername(un);
+    localStorage.setItem("username", un);
+  };
   const getLists = async () => {
     const response = await fetch("/api/get-all-lists");
     const data = await response.json();
@@ -16,14 +21,15 @@ export default function App() {
 
   useEffect(() => {
     if (status !== "loading") return;
+    if (!username) return;
     getLists();
-  }, [status]);
+  }, [status, username]);
   return (
     <div className="App">
-      <Nav lists={lists} />
+      <Nav lists={lists} username={username} />
       <Router>
-        <Home path="/" />
-        <List lists={lists} path="list/:slug" />
+        <Home path="/" username={username} setUsername={setUsernameCallback} />
+        <List lists={lists} username={username} path="list/:slug" />
       </Router>
     </div>
   );
@@ -41,25 +47,16 @@ const Nav = ({ lists }) => {
     </nav>
   );
 };
-const Home = () => {
-  const [firstVisit, setFirstVisit] = useState(false);
-  const [userName, setUserName] = useState("");
-  useEffect(() => {
-    if (!localStorage.getItem("username")) {
-      setFirstVisit(true);
-    }
-  }, []);
+const Home = ({ username, setUsername }) => {
+  const [userNameInput, setUserNameInput] = useState("");
+
   function submit(e) {
     e.preventDefault();
-    if (userName.length < 3) {
-      return; //TODO: proper validation
-    }
-    localStorage.setItem("username", userName);
-    setFirstVisit(false);
+    setUsername(userNameInput);
   }
   return (
     <div className="Home">
-      {firstVisit ? (
+      {!username ? (
         <>
           <h1>
             Hej, kan se det er første gang du er her, hvad må jeg kalde dig?
@@ -67,14 +64,14 @@ const Home = () => {
           <form onSubmit={submit}>
             <input
               type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              value={userNameInput}
+              onChange={(e) => setUserNameInput(e.target.value)}
             />
             <button>Gem!</button>
           </form>
         </>
       ) : (
-        <h1>Velkommen tilbage {localStorage.getItem("username")}</h1>
+        <h1>Velkommen tilbage {username}</h1>
       )}
     </div>
   );
