@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Router, Link, useNavigate } from "@reach/router";
-import ReactMarkdown from "react-markdown";
-import CodeBlock from "./CodeBlock";
+import { Router } from "@reach/router";
+
+import Nav from "./comps/Nav";
+import Home from "./comps/Home";
+import List from "./comps/List";
 
 export default function App() {
   const [status, setStatus] = useState("loading");
@@ -34,82 +36,3 @@ export default function App() {
     </div>
   );
 }
-const Nav = ({ lists }) => {
-  return (
-    <nav className="Nav">
-      {lists.map((list) => {
-        return (
-          <Link key={list._id} to={`/list/${list.slug}`}>
-            {list.title}
-          </Link>
-        );
-      })}
-    </nav>
-  );
-};
-const Home = ({ username, setUsername }) => {
-  const [userNameInput, setUserNameInput] = useState("");
-
-  function submit(e) {
-    e.preventDefault();
-    setUsername(userNameInput);
-  }
-  return (
-    <div className="Home">
-      {!username ? (
-        <>
-          <h1>
-            Hej, kan se det er første gang du er her, hvad må jeg kalde dig?
-          </h1>
-          <form onSubmit={submit}>
-            <input
-              type="text"
-              value={userNameInput}
-              onChange={(e) => setUserNameInput(e.target.value)}
-            />
-            <button>Gem!</button>
-          </form>
-        </>
-      ) : (
-        <h1>Velkommen tilbage {username}</h1>
-      )}
-    </div>
-  );
-};
-const List = ({ lists, slug }) => {
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!localStorage.getItem("username")) {
-      navigate(`/`);
-    }
-  }, [navigate]);
-  const thisList = lists.find((list) => list.slug === slug);
-
-  if (!thisList) {
-    return <></>;
-  }
-  return (
-    <main className="List">
-      <h1>{thisList.title}</h1>
-      {thisList.comments.data.map((comment) => {
-        return <Comment key={comment._id} data={comment} />;
-      })}
-    </main>
-  );
-};
-const Comment = ({ data }) => {
-  console.log(data);
-  return (
-    <article>
-      <h2>{data.author}</h2>
-
-      <StyledMarkdown content={data.comment} />
-      {data.author === localStorage.getItem("username") && (
-        <button>Delete</button>
-      )}
-    </article>
-  );
-};
-const StyledMarkdown = ({ content }) => {
-  return <ReactMarkdown source={content} renderers={{ code: CodeBlock }} />;
-};
