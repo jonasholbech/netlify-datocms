@@ -6,7 +6,7 @@ type Comment {
   comment: String!
   author: String!
   list: List!
-  comments: [SubComment] @relation
+  comments: [SubComment!]! @relation
 }
 
 type SubComment {
@@ -18,7 +18,7 @@ type SubComment {
 type List {
   title: String!
   slug: String!
-  comments: [Comment] @relation
+  comments: [Comment!] @relation
 }
 
 type Query {
