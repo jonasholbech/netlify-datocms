@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "@reach/router";
 import Comment from "./Comment";
 
-const List = ({ lists, slug, username, onNewComment }) => {
+const List = ({ lists, slug, username, onNewComment, onNewSubComment }) => {
   const [comment, setComment] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
@@ -18,6 +18,11 @@ const List = ({ lists, slug, username, onNewComment }) => {
       comment,
       list: thisList._id,
     });
+    setComment("");
+  };
+  const onNewSubCommentList = (payload) => {
+    payload.listId = thisList._id;
+    onNewSubComment(payload);
   };
   if (!thisList) {
     return <></>;
@@ -36,7 +41,14 @@ const List = ({ lists, slug, username, onNewComment }) => {
         <button>Gem</button>
       </form>
       {thisList.comments.data.map((comment) => {
-        return <Comment username={username} key={comment._id} data={comment} />;
+        return (
+          <Comment
+            onNewSubComment={onNewSubCommentList}
+            username={username}
+            key={comment._id}
+            data={comment}
+          />
+        );
       })}
     </main>
   );

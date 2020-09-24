@@ -1,13 +1,5 @@
 const sendQuery = require("./helpers/send-query");
 
-const CREATE_NOTE = `
-  mutation($text: String!){
-    createNote(data: {text: $text}){
-      _id
-      text
-    }
-  }
-`;
 const CREATE_COMMENT = `
 mutation ($comment: String!, $author: String!, $list: ID!) {
     createComment(data: {
@@ -32,12 +24,25 @@ mutation ($comment: String!, $author: String!, $list: ID!) {
     }
   }
 `;
+const CREATE_SUBCOMMENT = `
+mutation ($comment: String!, $author:String!, $parent:ID!) {
+    createSubComment(data: {
+      comment:$comment
+      author:$author
+      parent: {connect:$parent}
+    }) {
+      _id
+      comment
+      author
+    }
+  }
+`;
 exports.handler = async (event) => {
-  const { comment, author, list } = JSON.parse(event.body);
-  const { data, errors } = await sendQuery(CREATE_COMMENT, {
+  const { comment, author, parent } = JSON.parse(event.body);
+  const { data, errors } = await sendQuery(CREATE_SUBCOMMENT, {
     comment,
     author,
-    list,
+    parent,
   });
 
   if (errors) {
@@ -49,6 +54,6 @@ exports.handler = async (event) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ comment: data.createComment }),
+    body: JSON.stringify({ comment: data.createSubComment }),
   };
 };
