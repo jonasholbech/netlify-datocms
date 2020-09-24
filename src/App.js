@@ -29,7 +29,6 @@ export default function App() {
     setLists(nextLists);
   };
   const onNewSubComment = async (payload) => {
-    console.log(payload);
     const newPayload = {
       comment: payload.comment,
       author: username,
@@ -40,7 +39,6 @@ export default function App() {
       body: JSON.stringify(newPayload),
     });
     const data = await response.json();
-    console.log(data.comment);
 
     const nextLists = [...lists];
     const whichList = nextLists.findIndex(
@@ -52,10 +50,7 @@ export default function App() {
     nextLists[whichList].comments.data[whichComment].comments.data = nextLists[
       whichList
     ].comments.data[whichComment].comments.data.concat(data.comment);
-    /*nextLists[whichList].comments.data = nextLists[
-      whichList
-    ].comments.data.concat(data.comment);
-    */
+
     setLists(nextLists);
   };
   const getLists = async () => {
