@@ -1,15 +1,21 @@
 import React from "react";
 import StyledMarkdown from "./StyledMarkdown";
-const Comment = ({ data }) => {
-  console.log(data);
+import SubComment from "./SubComment";
+
+const Comment = ({ data, username }) => {
   return (
     <article>
-      <h2>{data.author}</h2>
+      <h2 className="author">{data.author}</h2>
 
       <StyledMarkdown content={data.comment} />
-      {data.author === localStorage.getItem("username") && (
-        <button>Delete</button>
-      )}
+      {data.author === username && <button>Delete</button>}
+      <div className="subcomments">
+        <ol>
+          {data.comments.data.map((sc) => (
+            <SubComment sc={sc} username={username} />
+          ))}
+        </ol>
+      </div>
     </article>
   );
 };
