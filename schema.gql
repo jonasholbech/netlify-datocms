@@ -5,7 +5,14 @@ type Note {
 type Comment {
   comment: String!
   author: String!
-  list: List
+  list: List!
+  comments: [SubComment] @relation
+}
+
+type SubComment {
+  comment: String!
+  author: String!
+  parent: Comment!
 }
 
 type List {
