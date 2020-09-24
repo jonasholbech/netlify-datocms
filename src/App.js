@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-
-import { Router, Link } from "@reach/router";
-
+import { Router, Link, useNavigate } from "@reach/router";
 import ReactMarkdown from "react-markdown";
-
 import CodeBlock from "./CodeBlock";
 
 export default function App() {
@@ -16,6 +13,7 @@ export default function App() {
     setLists(data.lists);
     setStatus("loaded");
   };
+
   useEffect(() => {
     if (status !== "loading") return;
     getLists();
@@ -82,6 +80,12 @@ const Home = () => {
   );
 };
 const List = ({ lists, slug }) => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!localStorage.getItem("username")) {
+      navigate(`/`);
+    }
+  }, []);
   const thisList = lists.find((list) => list.slug === slug);
 
   if (!thisList) {
