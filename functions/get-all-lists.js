@@ -5,6 +5,7 @@ query {
     allLists {
       data {
         _id
+        _ts
         title
         slug
         comments {
@@ -13,6 +14,13 @@ query {
             author
             comment
             _ts
+            comments {
+              data {
+                _id
+                comment
+                author
+              }
+            }
           }
         }
       }
