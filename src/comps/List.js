@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "@reach/router";
 import Comment from "./Comment";
 
-const List = ({ lists, slug, username, onNewComment, onNewSubComment }) => {
+const List = ({
+  lists,
+  slug,
+  username,
+  onNewComment,
+  onNewSubComment,
+  onCommentDelete,
+}) => {
   const [comment, setComment] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
@@ -43,6 +50,7 @@ const List = ({ lists, slug, username, onNewComment, onNewSubComment }) => {
       {thisList.comments.data.map((comment) => {
         return (
           <Comment
+            onCommentDelete={onCommentDelete}
             onNewSubComment={onNewSubCommentList}
             username={username}
             key={comment._id}

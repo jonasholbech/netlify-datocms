@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import StyledMarkdown from "./StyledMarkdown";
 import SubComment from "./SubComment";
 
-const Comment = ({ data, username, onNewSubComment }) => {
+const Comment = ({ data, username, onNewSubComment, onCommentDelete }) => {
   const [subCommentText, setSubCommentText] = useState("");
   function submit(e) {
     e.preventDefault();
@@ -17,7 +17,9 @@ const Comment = ({ data, username, onNewSubComment }) => {
       <h2 className="author">{data.author}</h2>
 
       <StyledMarkdown content={data.comment} />
-      {data.author === username && <button>Delete</button>}
+      {data.author === username && (
+        <button onClick={() => onCommentDelete(data._id)}>Delete</button>
+      )}
       <div className="subcomments">
         <ol>
           {data.comments.data.map((sc) => (

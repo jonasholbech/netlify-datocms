@@ -66,13 +66,31 @@ export default function App() {
     if (!username) return;
     getLists();
   }, [status, username]);
+  async function onCommentDelete(id) {
+    const response = await fetch("/api/get-subcomments", {
+      method: "POST",
+      body: JSON.stringify({
+        id,
+      }),
+    });
+    const data = await response.json();
+
+    fetch("/api/delete-subcomments-for-id", {
+      method: "POST",
+      body: JSON.stringify({ ids: data.subcomments }),
+    })
+      .then((res) => res.text())
+      .then(console.log);
+  }
   return (
     <div className="App">
       <Nav lists={lists} username={username} />
+
       <Router>
         <Home path="/" username={username} setUsername={setUsernameCallback} />
         <List
           onNewComment={onNewComment}
+          onCommentDelete={onCommentDelete}
           onNewSubComment={onNewSubComment}
           lists={lists}
           username={username}

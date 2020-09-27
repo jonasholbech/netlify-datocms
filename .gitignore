@@ -26,3 +26,5 @@ key.txt
 .env
 # Local Netlify folder
 .netlify
+
+.vscode/
