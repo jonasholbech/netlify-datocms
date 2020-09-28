@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import { useNavigate } from "@reach/router";
+import usePortal from "react-useportal";
 import Button from "muicss/lib/react/button";
 import Panel from "muicss/lib/react/panel";
 import Form from "muicss/lib/react/form";
 import Textarea from "muicss/lib/react/textarea";
 
 import Comment from "./Comment";
+import Instructions from "./Instructions";
 
 const List = ({
   lists,
@@ -16,6 +17,7 @@ const List = ({
   onNewSubComment,
   onCommentDelete,
 }) => {
+  const { openPortal, closePortal, isOpen, Portal } = usePortal();
   const [comment, setComment] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
@@ -33,7 +35,7 @@ const List = ({
     });
     setComment("");
   };
-  const showModal = (e) => {};
+
   const onNewSubCommentList = (payload) => {
     payload.listId = thisList._id;
     onNewSubComment(payload);
@@ -43,6 +45,13 @@ const List = ({
   }
   return (
     <main className="List">
+      {isOpen && (
+        <Portal>
+          <div className="portal">
+            <Instructions onClose={closePortal} />
+          </div>
+        </Portal>
+      )}
       <h1>{thisList.title}</h1>
       <Panel>
         <Form onSubmit={submit}>
@@ -67,7 +76,7 @@ const List = ({
           size="small"
           variant="fab"
           color="accent"
-          onClick={showModal}
+          onClick={openPortal}
         >
           ?
         </Button>
