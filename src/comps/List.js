@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "@reach/router";
+import Button from "muicss/lib/react/button";
+import Panel from "muicss/lib/react/panel";
 import Comment from "./Comment";
 
 const List = ({
@@ -37,25 +39,31 @@ const List = ({
   return (
     <main className="List">
       <h1>{thisList.title}</h1>
-      <form onSubmit={submit}>
-        <label>
-          Skriv en besked
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-        </label>
-        <button>Gem</button>
-      </form>
+      <Panel>
+        <form onSubmit={submit}>
+          <label>
+            Skriv en besked
+            <textarea
+              className="listTextarea"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+          </label>
+          <Button variant="raised" color="primary">
+            Gem
+          </Button>
+        </form>
+      </Panel>
       {thisList.comments.data.map((comment) => {
         return (
-          <Comment
-            onCommentDelete={onCommentDelete}
-            onNewSubComment={onNewSubCommentList}
-            username={username}
-            key={comment._id}
-            data={comment}
-          />
+          <Panel key={comment._id}>
+            <Comment
+              onCommentDelete={onCommentDelete}
+              onNewSubComment={onNewSubCommentList}
+              username={username}
+              data={comment}
+            />
+          </Panel>
         );
       })}
     </main>

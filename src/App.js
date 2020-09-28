@@ -4,6 +4,7 @@ import { Router } from "@reach/router";
 import Nav from "./comps/Nav";
 import Home from "./comps/Home";
 import List from "./comps/List";
+import "./App.css";
 
 //TODO: split up these functions into helper files
 export default function App() {

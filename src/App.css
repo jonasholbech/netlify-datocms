@@ -1,38 +1,65 @@
-.App {
-  text-align: center;
+* {
+  box-sizing: border-box;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+label,
+button,
+input,
+textarea {
+  display: block;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+label {
+  cursor: pointer;
+  color: #2196f3;
+  font-weight: bold;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 50px;
+}
+textarea.listTextarea {
+  height: 150px;
+}
+main {
+  margin: 0 1rem;
+}
+.Nav {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: auto;
+  padding-top: 8px;
+  align-content: center;
+  justify-content: space-around;
+}
+.Comment header {
+  display: flex;
+  justify-content: space-between;
+}
+.Comment header button {
+  margin-top: 0;
+}
+.Comment h2 {
+  margin-top: 0;
+}
+.Comment ol {
+  list-style-type: none;
 }
 
-.App-link {
-  color: #61dafb;
+.SubComment {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  border-bottom: 1px solid #000;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.SubComment button.mui-btn--danger {
+  opacity: 0;
+}
+.SubComment:hover button.mui-btn--danger {
+  opacity: 1;
+}
+.SubComment span {
+  font-weight: bold;
+}
+.SubComment section {
+  flex-grow: 2;
 }
