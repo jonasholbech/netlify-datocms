@@ -49,7 +49,11 @@ const List = ({
               onChange={(e) => setComment(e.target.value)}
             />
           </label>
-          <Button variant="raised" color="primary">
+          <Button
+            disabled={comment.length < 2}
+            variant="raised"
+            color="primary"
+          >
             Gem
           </Button>
         </form>

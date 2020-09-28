@@ -44,7 +44,12 @@ const Comment = ({ data, username, onNewSubComment, onCommentDelete }) => {
                 />
               </label>
 
-              <Button size="small" variant="raised" color="primary">
+              <Button
+                disabled={subCommentText.length < 2}
+                size="small"
+                variant="raised"
+                color="primary"
+              >
                 Svar!
               </Button>
             </form>
