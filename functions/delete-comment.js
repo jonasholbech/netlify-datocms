@@ -1,16 +1,20 @@
 const sendQuery = require("./helpers/send-query");
 
-const DELETE_NOTE = `
-  mutation($id: ID!) {
-    deleteNote(id: $id){
-      _id
-    }
+const DELETE_COMMENT = `
+mutation ($id: ID!) {
+    deleteComment(id:$id){
+        _id
+        list {
+          _id
+        }
+      }
   }
 `;
-
 exports.handler = async (event) => {
   const { id } = JSON.parse(event.body);
-  const { data, errors } = await sendQuery(DELETE_NOTE, { id });
+  const { data, errors } = await sendQuery(DELETE_COMMENT, {
+    id,
+  });
 
   if (errors) {
     return {
@@ -21,6 +25,6 @@ exports.handler = async (event) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ deletedNote: data.deleteNote }),
+    body: JSON.stringify({ comment: data.deleteComment }),
   };
 };

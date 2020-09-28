@@ -1,13 +1,5 @@
 const sendQuery = require("./helpers/send-query");
 
-const CREATE_NOTE = `
-  mutation($text: String!){
-    createNote(data: {text: $text}){
-      _id
-      text
-    }
-  }
-`;
 const CREATE_COMMENT = `
 mutation ($comment: String!, $author: String!, $list: ID!) {
     createComment(data: {

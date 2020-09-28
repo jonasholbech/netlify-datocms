@@ -5,6 +5,7 @@ import Nav from "./comps/Nav";
 import Home from "./comps/Home";
 import List from "./comps/List";
 
+//TODO: split up these functions into helper files
 export default function App() {
   const [status, setStatus] = useState("loading");
   const [lists, setLists] = useState([]);
@@ -66,6 +67,7 @@ export default function App() {
     if (!username) return;
     getLists();
   }, [status, username]);
+
   async function onCommentDelete(id) {
     const response = await fetch("/api/get-subcomments", {
       method: "POST",
@@ -75,12 +77,25 @@ export default function App() {
     });
     const data = await response.json();
 
-    fetch("/api/delete-subcomments-for-id", {
+    const batchDeleteResponse = await fetch("/api/delete-subcomments-for-id", {
       method: "POST",
       body: JSON.stringify({ ids: data.subcomments }),
-    })
-      .then((res) => res.text())
-      .then(console.log);
+    });
+    await batchDeleteResponse.json();
+
+    const commentDeleteResponse = await fetch("/api/delete-comment", {
+      method: "POST",
+      body: JSON.stringify({ id }),
+    });
+    const commentResponse = await commentDeleteResponse.json();
+    const nextLists = [...lists];
+    const whichList = nextLists.findIndex(
+      (list) => list._id === commentResponse.comment.list._id
+    );
+    nextLists[whichList].comments.data = nextLists[
+      whichList
+    ].comments.data.filter((com) => com._id !== commentResponse.comment._id);
+    setLists(nextLists);
   }
   return (
     <div className="App">
