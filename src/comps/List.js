@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "@reach/router";
 import usePortal from "react-useportal";
+import UseAnimations from "react-useanimations";
+import loading2 from "react-useanimations/lib/loading2";
 import Button from "muicss/lib/react/button";
 import Panel from "muicss/lib/react/panel";
 import Form from "muicss/lib/react/form";
@@ -16,9 +18,11 @@ const List = ({
   onNewComment,
   onNewSubComment,
   onCommentDelete,
+  onSubCommentDelete,
 }) => {
   const { openPortal, closePortal, isOpen, Portal } = usePortal();
   const [comment, setComment] = useState("");
+  const [newCommentSubmitted, setNewCommentSubmitted] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     if (!localStorage.getItem("username")) {
@@ -29,17 +33,24 @@ const List = ({
 
   const submit = (e) => {
     e.preventDefault();
-    onNewComment({
-      comment,
-      list: thisList._id,
-    });
-    setComment("");
+    setNewCommentSubmitted(true);
+    onNewComment(
+      {
+        comment,
+        list: thisList._id,
+      },
+      () => {
+        setNewCommentSubmitted(false);
+        setComment("");
+      }
+    );
   };
 
-  const onNewSubCommentList = (payload) => {
+  const onNewSubCommentList = (payload, callback) => {
     payload.listId = thisList._id;
-    onNewSubComment(payload);
+    onNewSubComment(payload, callback);
   };
+
   if (!thisList) {
     return <></>;
   }
@@ -68,7 +79,16 @@ const List = ({
             variant="raised"
             color="primary"
           >
-            Gem
+            {newCommentSubmitted ? (
+              <UseAnimations
+                animation={loading2}
+                className="useAnimations"
+                size={30}
+                strokeColor="white"
+              />
+            ) : (
+              "Gem"
+            )}
           </Button>
         </Form>
         <Button
@@ -86,6 +106,7 @@ const List = ({
           <Panel key={comment._id}>
             <Comment
               onCommentDelete={onCommentDelete}
+              onSubCommentDelete={onSubCommentDelete}
               onNewSubComment={onNewSubCommentList}
               username={username}
               data={comment}

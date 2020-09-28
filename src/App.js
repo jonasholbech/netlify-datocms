@@ -9,6 +9,7 @@ import "./App.css";
 //TODO: split up these functions into helper files
 export default function App() {
   const [status, setStatus] = useState("loading");
+
   const [lists, setLists] = useState([]);
   const [username, setUsername] = useState(localStorage.getItem("username"));
 
@@ -16,7 +17,7 @@ export default function App() {
     setUsername(un);
     localStorage.setItem("username", un);
   };
-  const onNewComment = async (payload) => {
+  const onNewComment = async (payload, callback) => {
     payload.author = username;
     const response = await fetch("/api/create-comment", {
       method: "POST",
@@ -29,8 +30,9 @@ export default function App() {
       whichList
     ].comments.data.concat(data.comment);
     setLists(nextLists);
+    callback();
   };
-  const onNewSubComment = async (payload) => {
+  const onNewSubComment = async (payload, callback) => {
     const newPayload = {
       comment: payload.comment,
       author: username,
@@ -54,6 +56,7 @@ export default function App() {
     ].comments.data[whichComment].comments.data.concat(data.comment);
 
     setLists(nextLists);
+    callback();
   };
   const getLists = async () => {
     const response = await fetch("/api/get-all-lists");
@@ -69,7 +72,29 @@ export default function App() {
     getLists();
   }, [status, username]);
 
-  async function onCommentDelete(id) {
+  async function onSubCommentDelete(id, callback) {
+    const promise = await fetch("/api/delete-subcomment", {
+      method: "POST",
+      body: JSON.stringify({ id }),
+    });
+    const data = await promise.json();
+    const scId = data.comment._id;
+    const coId = data.comment.parent._id;
+    const liId = data.comment.parent.list._id;
+    const nextLists = [...lists];
+    const whichList = nextLists.findIndex((list) => list._id === liId);
+    const whichComment = nextLists[whichList].comments.data.findIndex(
+      (com) => com._id === coId
+    );
+    nextLists[whichList].comments.data[whichComment].comments.data = nextLists[
+      whichList
+    ].comments.data[whichComment].comments.data.filter(
+      (com) => com._id !== scId
+    );
+    setLists(nextLists);
+    callback();
+  }
+  async function onCommentDelete(id, callback) {
     const response = await fetch("/api/get-subcomments", {
       method: "POST",
       body: JSON.stringify({
@@ -97,6 +122,7 @@ export default function App() {
       whichList
     ].comments.data.filter((com) => com._id !== commentResponse.comment._id);
     setLists(nextLists);
+    callback();
   }
   return (
     <div className="App">
@@ -108,6 +134,7 @@ export default function App() {
           onNewComment={onNewComment}
           onCommentDelete={onCommentDelete}
           onNewSubComment={onNewSubComment}
+          onSubCommentDelete={onSubCommentDelete}
           lists={lists}
           username={username}
           path="list/:slug"

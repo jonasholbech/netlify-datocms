@@ -93,3 +93,6 @@ main {
 .SubComment section {
   flex-grow: 2;
 }
+.useAnimations path {
+  fill: white;
+}

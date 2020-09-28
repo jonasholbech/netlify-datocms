@@ -1,20 +1,43 @@
 import React, { useState } from "react";
 import StyledMarkdown from "./StyledMarkdown";
+import UseAnimations from "react-useanimations";
+import loading2 from "react-useanimations/lib/loading2";
 import SubComment from "./SubComment";
 import Button from "muicss/lib/react/button";
 import Form from "muicss/lib/react/form";
 import Textarea from "muicss/lib/react/textarea";
 
-const Comment = ({ data, username, onNewSubComment, onCommentDelete }) => {
+const Comment = ({
+  data,
+  username,
+  onNewSubComment,
+  onCommentDelete,
+  onSubCommentDelete,
+}) => {
   const [subCommentText, setSubCommentText] = useState("");
+  const [beingDeleted, setBeingDeleted] = useState(false);
+  const [newSubCommentSubmitted, setNewSubCommentSubmitted] = useState(false);
   function submit(e) {
     e.preventDefault();
-    onNewSubComment({
-      commentId: data._id,
-      comment: subCommentText,
-    });
-    setSubCommentText("");
+    setNewSubCommentSubmitted(true);
+    onNewSubComment(
+      {
+        commentId: data._id,
+        comment: subCommentText,
+      },
+      () => {
+        setNewSubCommentSubmitted(false);
+        setSubCommentText("");
+      }
+    );
   }
+  function deleteComment(id) {
+    setBeingDeleted(true);
+    onCommentDelete(id, () => {
+      setBeingDeleted(false);
+    });
+  }
+
   return (
     <article className="Comment">
       <header>
@@ -23,9 +46,18 @@ const Comment = ({ data, username, onNewSubComment, onCommentDelete }) => {
           <Button
             variant="raised"
             color="danger"
-            onClick={() => onCommentDelete(data._id)}
+            onClick={() => deleteComment(data._id)}
           >
-            Delete
+            {beingDeleted ? (
+              <UseAnimations
+                animation={loading2}
+                className="useAnimations"
+                size={30}
+                strokeColor="white"
+              />
+            ) : (
+              "Slet"
+            )}
           </Button>
         )}
       </header>
@@ -37,7 +69,12 @@ const Comment = ({ data, username, onNewSubComment, onCommentDelete }) => {
         </summary>
         <ol>
           {data.comments.data.map((sc) => (
-            <SubComment key={sc._id} sc={sc} username={username} />
+            <SubComment
+              key={sc._id}
+              sc={sc}
+              onSubCommentDelete={onSubCommentDelete}
+              username={username}
+            />
           ))}
           <li>
             <Form onSubmit={submit}>
@@ -55,7 +92,16 @@ const Comment = ({ data, username, onNewSubComment, onCommentDelete }) => {
                 variant="raised"
                 color="primary"
               >
-                Svar!
+                {newSubCommentSubmitted ? (
+                  <UseAnimations
+                    animation={loading2}
+                    className="useAnimations"
+                    size={30}
+                    strokeColor="white"
+                  />
+                ) : (
+                  "Svar"
+                )}
               </Button>
             </Form>
           </li>
