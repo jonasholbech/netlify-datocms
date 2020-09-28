@@ -19,14 +19,9 @@ export default function App() {
       body: JSON.stringify(payload),
     });
     const data = await response.json();
-    const nextLists = [...globalState.lists];
-    const whichList = nextLists.findIndex((list) => list._id === payload.list);
-    nextLists[whichList].comments.data = nextLists[
-      whichList
-    ].comments.data.concat(data.comment);
     dispatch({
-      type: "setLists",
-      payload: nextLists,
+      type: "addComment",
+      payload: data.comment,
     });
     callback();
   };

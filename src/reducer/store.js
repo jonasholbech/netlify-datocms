@@ -21,6 +21,19 @@ const StateProvider = ({ children }) => {
     if (action.type === "setLists") {
       return { ...state, lists: action.payload };
     }
+    if (action.type === "addComment") {
+      const newLists = state.lists.map((list) => {
+        //Deep clone
+        let newList = JSON.parse(JSON.stringify(list));
+        if (newList._id === action.payload.list._id) {
+          console.log("found it");
+          newList.comments.data = newList.comments.data.concat(action.payload);
+        }
+        return newList;
+      });
+      return { ...state, lists: newLists };
+    }
+
     if (action.type === "add") {
       const items = state.items.concat({
         id: Math.random(),
