@@ -16,7 +16,6 @@ import { store } from "../reducer/store.js";
 const List = ({
   lists,
   slug,
-  onNewComment,
   onNewSubComment,
   onCommentDelete,
   onSubCommentDelete,
@@ -31,21 +30,28 @@ const List = ({
       navigate(`/`);
     }
   }, [navigate, globalState.username]);
+
   const thisList = globalState.lists.find((list) => list.slug === slug);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     setNewCommentSubmitted(true);
-    onNewComment(
-      {
-        comment,
-        list: thisList._id,
-      },
-      () => {
-        setNewCommentSubmitted(false);
-        setComment("");
-      }
-    );
+    const payload = {
+      comment,
+      list: thisList._id,
+      author: globalState.username,
+    };
+    const response = await fetch("/api/create-comment", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    dispatch({
+      type: "addComment",
+      payload: data.comment,
+    });
+    setNewCommentSubmitted(false);
+    setComment("");
   };
 
   const onNewSubCommentList = (payload, callback) => {

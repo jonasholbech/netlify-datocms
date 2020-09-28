@@ -14,11 +14,15 @@ query {
             author
             comment
             _ts
+            list {
+              _id
+            }
             comments {
               data {
                 _id
                 comment
                 author
+                parentId
               }
             }
           }

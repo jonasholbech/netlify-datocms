@@ -12,19 +12,6 @@ export default function App() {
   const { globalState, dispatch } = useContext(store);
   console.log(globalState);
 
-  const onNewComment = async (payload, callback) => {
-    payload.author = globalState.username;
-    const response = await fetch("/api/create-comment", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-    dispatch({
-      type: "addComment",
-      payload: data.comment,
-    });
-    callback();
-  };
   const onNewSubComment = async (payload, callback) => {
     const newPayload = {
       comment: payload.comment,
@@ -139,7 +126,6 @@ export default function App() {
       <Router>
         <Home path="/" />
         <List
-          onNewComment={onNewComment}
           onCommentDelete={onCommentDelete}
           onNewSubComment={onNewSubComment}
           onSubCommentDelete={onSubCommentDelete}
