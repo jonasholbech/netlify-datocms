@@ -9,3 +9,4 @@
 ## TODO
 
 simplify loading (more smaller queries) => simpler state
+collapse code blocks: https://www.npmjs.com/package/react-syntax-highlighter kan være noget derinde jeg kan bruge
