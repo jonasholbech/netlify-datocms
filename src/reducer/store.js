@@ -33,7 +33,16 @@ const StateProvider = ({ children }) => {
       });
       return { ...state, lists: newLists };
     }
-
+    if (action.type === "deleteComment") {
+      const nextLists = state.lists.map((list) => {
+        let newList = JSON.parse(JSON.stringify(list));
+        newList.comments.data = newList.comments.data.filter(
+          (com) => com._id !== action.payload._id
+        );
+        return newList;
+      });
+      return { ...state, lists: nextLists };
+    }
     if (action.type === "add") {
       const items = state.items.concat({
         id: Math.random(),

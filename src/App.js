@@ -86,47 +86,13 @@ export default function App() {
 
     callback();
   }
-  async function onCommentDelete(id, callback) {
-    const response = await fetch("/api/get-subcomments", {
-      method: "POST",
-      body: JSON.stringify({
-        id,
-      }),
-    });
-    const data = await response.json();
 
-    const batchDeleteResponse = await fetch("/api/delete-subcomments-for-id", {
-      method: "POST",
-      body: JSON.stringify({ ids: data.subcomments }),
-    });
-    await batchDeleteResponse.json();
-
-    const commentDeleteResponse = await fetch("/api/delete-comment", {
-      method: "POST",
-      body: JSON.stringify({ id }),
-    });
-    const commentResponse = await commentDeleteResponse.json();
-    const nextLists = [...globalState.lists];
-    const whichList = nextLists.findIndex(
-      (list) => list._id === commentResponse.comment.list._id
-    );
-    nextLists[whichList].comments.data = nextLists[
-      whichList
-    ].comments.data.filter((com) => com._id !== commentResponse.comment._id);
-    dispatch({
-      type: "setLists",
-      payload: nextLists,
-    });
-    callback();
-  }
   return (
     <div className="App">
       <Nav />
-
       <Router>
         <Home path="/" />
         <List
-          onCommentDelete={onCommentDelete}
           onNewSubComment={onNewSubComment}
           onSubCommentDelete={onSubCommentDelete}
           path="list/:slug"

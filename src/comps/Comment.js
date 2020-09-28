@@ -8,12 +8,7 @@ import Form from "muicss/lib/react/form";
 import Textarea from "muicss/lib/react/textarea";
 import { store } from "../reducer/store.js";
 
-const Comment = ({
-  data,
-  onNewSubComment,
-  onCommentDelete,
-  onSubCommentDelete,
-}) => {
+const Comment = ({ data, onNewSubComment, onSubCommentDelete }) => {
   const { globalState, dispatch } = useContext(store);
   const [subCommentText, setSubCommentText] = useState("");
   const [beingDeleted, setBeingDeleted] = useState(false);
@@ -32,11 +27,34 @@ const Comment = ({
       }
     );
   }
-  function deleteComment(id) {
+  async function onCommentDelete() {
     setBeingDeleted(true);
-    onCommentDelete(id, () => {
-      setBeingDeleted(false);
+    const response = await fetch("/api/get-subcomments", {
+      method: "POST",
+      body: JSON.stringify({
+        id: data._id,
+      }),
     });
+    const getSCData = await response.json();
+
+    const batchDeleteResponse = await fetch("/api/delete-subcomments-for-id", {
+      method: "POST",
+      body: JSON.stringify({ ids: getSCData.subcomments }),
+    });
+    await batchDeleteResponse.json();
+
+    const commentDeleteResponse = await fetch("/api/delete-comment", {
+      method: "POST",
+      body: JSON.stringify({ id: data._id }),
+    });
+    const commentResponse = await commentDeleteResponse.json();
+
+    dispatch({
+      type: "deleteComment",
+      payload: data,
+    });
+    //since it's being removed from the dom, no need to change state, i think
+    //setBeingDeleted(false);
   }
 
   return (
@@ -44,11 +62,7 @@ const Comment = ({
       <header>
         <h2 className="author">{data.author}</h2>
         {data.author === globalState.username && (
-          <Button
-            variant="raised"
-            color="danger"
-            onClick={() => deleteComment(data._id)}
-          >
+          <Button variant="raised" color="danger" onClick={onCommentDelete}>
             {beingDeleted ? (
               <UseAnimations
                 animation={loading2}

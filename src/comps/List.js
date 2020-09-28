@@ -13,13 +13,7 @@ import Instructions from "./Instructions";
 
 import { store } from "../reducer/store.js";
 
-const List = ({
-  lists,
-  slug,
-  onNewSubComment,
-  onCommentDelete,
-  onSubCommentDelete,
-}) => {
+const List = ({ slug, onNewSubComment, onSubCommentDelete }) => {
   const { globalState, dispatch } = useContext(store);
   const { openPortal, closePortal, isOpen, Portal } = usePortal();
   const [comment, setComment] = useState("");
@@ -113,7 +107,6 @@ const List = ({
         return (
           <Panel key={comment._id}>
             <Comment
-              onCommentDelete={onCommentDelete}
               onSubCommentDelete={onSubCommentDelete}
               onNewSubComment={onNewSubCommentList}
               data={comment}
