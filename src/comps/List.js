@@ -30,8 +30,8 @@ const List = ({
     if (!globalState.username) {
       navigate(`/`);
     }
-  }, [navigate]);
-  const thisList = lists.find((list) => list.slug === slug);
+  }, [navigate, globalState.username]);
+  const thisList = globalState.lists.find((list) => list.slug === slug);
 
   const submit = (e) => {
     e.preventDefault();

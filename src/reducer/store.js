@@ -18,7 +18,9 @@ const StateProvider = ({ children }) => {
       localStorage.setItem("username", action.payload);
       return { ...state, username: action.payload };
     }
-
+    if (action.type === "setLists") {
+      return { ...state, lists: action.payload };
+    }
     if (action.type === "add") {
       const items = state.items.concat({
         id: Math.random(),

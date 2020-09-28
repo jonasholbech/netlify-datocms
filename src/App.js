@@ -12,8 +12,6 @@ export default function App() {
   const { globalState, dispatch } = useContext(store);
   console.log(globalState);
 
-  const [lists, setLists] = useState([]);
-
   const onNewComment = async (payload, callback) => {
     payload.author = globalState.username;
     const response = await fetch("/api/create-comment", {
@@ -21,12 +19,15 @@ export default function App() {
       body: JSON.stringify(payload),
     });
     const data = await response.json();
-    const nextLists = [...lists];
+    const nextLists = [...globalState.lists];
     const whichList = nextLists.findIndex((list) => list._id === payload.list);
     nextLists[whichList].comments.data = nextLists[
       whichList
     ].comments.data.concat(data.comment);
-    setLists(nextLists);
+    dispatch({
+      type: "setLists",
+      payload: nextLists,
+    });
     callback();
   };
   const onNewSubComment = async (payload, callback) => {
@@ -41,7 +42,7 @@ export default function App() {
     });
     const data = await response.json();
 
-    const nextLists = [...lists];
+    const nextLists = [...globalState.lists];
     const whichList = nextLists.findIndex(
       (list) => list._id === payload.listId
     );
@@ -52,7 +53,10 @@ export default function App() {
       whichList
     ].comments.data[whichComment].comments.data.concat(data.comment);
 
-    setLists(nextLists);
+    dispatch({
+      type: "setLists",
+      payload: nextLists,
+    });
     callback();
   };
 
@@ -62,8 +66,10 @@ export default function App() {
     const getLists = async () => {
       const response = await fetch("/api/get-all-lists");
       const data = await response.json();
-      console.table(data.lists);
-      setLists(data.lists);
+      dispatch({
+        type: "setLists",
+        payload: data.lists,
+      });
       dispatch({
         type: "loaded",
         payload: "",
@@ -81,7 +87,7 @@ export default function App() {
     const scId = data.comment._id;
     const coId = data.comment.parent._id;
     const liId = data.comment.parent.list._id;
-    const nextLists = [...lists];
+    const nextLists = [...globalState.lists];
     const whichList = nextLists.findIndex((list) => list._id === liId);
     const whichComment = nextLists[whichList].comments.data.findIndex(
       (com) => com._id === coId
@@ -91,7 +97,11 @@ export default function App() {
     ].comments.data[whichComment].comments.data.filter(
       (com) => com._id !== scId
     );
-    setLists(nextLists);
+    dispatch({
+      type: "setLists",
+      payload: nextLists,
+    });
+
     callback();
   }
   async function onCommentDelete(id, callback) {
@@ -114,19 +124,22 @@ export default function App() {
       body: JSON.stringify({ id }),
     });
     const commentResponse = await commentDeleteResponse.json();
-    const nextLists = [...lists];
+    const nextLists = [...globalState.lists];
     const whichList = nextLists.findIndex(
       (list) => list._id === commentResponse.comment.list._id
     );
     nextLists[whichList].comments.data = nextLists[
       whichList
     ].comments.data.filter((com) => com._id !== commentResponse.comment._id);
-    setLists(nextLists);
+    dispatch({
+      type: "setLists",
+      payload: nextLists,
+    });
     callback();
   }
   return (
     <div className="App">
-      <Nav lists={lists} />
+      <Nav />
 
       <Router>
         <Home path="/" />
@@ -135,7 +148,6 @@ export default function App() {
           onCommentDelete={onCommentDelete}
           onNewSubComment={onNewSubComment}
           onSubCommentDelete={onSubCommentDelete}
-          lists={lists}
           path="list/:slug"
         />
       </Router>
