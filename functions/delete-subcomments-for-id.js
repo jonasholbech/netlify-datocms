@@ -5,8 +5,6 @@ require("dotenv").config();
 var serverClient = new faunadb.Client({
   secret: process.env.FAUNA_SERVER_SECRET,
 });
-//TODO: https://github.com/netlify/netlify-faunadb-example
-//TODO: delete the comment itself
 exports.handler = async (event, ctx, callback) => {
   const { ids } = JSON.parse(event.body);
 
