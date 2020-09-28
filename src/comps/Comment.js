@@ -23,7 +23,7 @@ const Comment = ({ data, onSubCommentDelete }) => {
       parent: data._id,
       parentId: data._id,
     };
-    console.log(newPayload);
+
     const response = await fetch("/api/create-subcomment", {
       method: "POST",
       body: JSON.stringify(newPayload),
@@ -56,11 +56,14 @@ const Comment = ({ data, onSubCommentDelete }) => {
     });
     await batchDeleteResponse.json();
 
-    const commentDeleteResponse = await fetch("/api/delete-comment", {
+    //const commentDeleteResponse =
+    await fetch("/api/delete-comment", {
       method: "POST",
       body: JSON.stringify({ id: data._id }),
     });
-    const commentResponse = await commentDeleteResponse.json();
+
+    //const commentResponse = await commentDeleteResponse.json();
+
     //TODO: (lots of places) add error handling, like
     /*
     https://javascript.info/async-await

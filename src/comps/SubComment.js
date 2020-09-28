@@ -6,7 +6,7 @@ import Button from "muicss/lib/react/button";
 import { store } from "../reducer/store.js";
 
 const SubComment = ({ sc, onSubCommentDelete }) => {
-  const { globalState, dispatch } = useContext(store);
+  const { globalState } = useContext(store);
   const [beingDeleted, setBeingDeleted] = useState(false);
   function deleteSub() {
     setBeingDeleted(true);

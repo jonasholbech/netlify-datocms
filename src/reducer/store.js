@@ -26,7 +26,6 @@ const StateProvider = ({ children }) => {
         //Deep clone
         let newList = JSON.parse(JSON.stringify(list));
         if (newList._id === action.payload.list._id) {
-          console.log("found it");
           newList.comments.data = newList.comments.data.concat(action.payload);
         }
         return newList;
