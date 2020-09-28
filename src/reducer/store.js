@@ -8,7 +8,7 @@ const initialState = {
 };
 const store = createContext(initialState);
 const { Provider } = store;
-
+//TODO: lots of leftovers (for copy paste purposes)
 const StateProvider = ({ children }) => {
   const [globalState, dispatch] = useReducer((state = initialState, action) => {
     if (action.type === "loaded") {
@@ -18,6 +18,7 @@ const StateProvider = ({ children }) => {
       localStorage.setItem("username", action.payload);
       return { ...state, username: action.payload };
     }
+
     if (action.type === "add") {
       const items = state.items.concat({
         id: Math.random(),
