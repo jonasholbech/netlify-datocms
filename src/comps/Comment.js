@@ -8,24 +8,37 @@ import Form from "muicss/lib/react/form";
 import Textarea from "muicss/lib/react/textarea";
 import { store } from "../reducer/store.js";
 
-const Comment = ({ data, onNewSubComment, onSubCommentDelete }) => {
+const Comment = ({ data, onSubCommentDelete }) => {
   const { globalState, dispatch } = useContext(store);
   const [subCommentText, setSubCommentText] = useState("");
   const [beingDeleted, setBeingDeleted] = useState(false);
   const [newSubCommentSubmitted, setNewSubCommentSubmitted] = useState(false);
-  function submit(e) {
+
+  async function submit(e) {
     e.preventDefault();
     setNewSubCommentSubmitted(true);
-    onNewSubComment(
-      {
-        commentId: data._id,
-        comment: subCommentText,
+    const newPayload = {
+      comment: subCommentText,
+      author: globalState.username,
+      parent: data._id,
+      parentId: data._id,
+    };
+    console.log(newPayload);
+    const response = await fetch("/api/create-subcomment", {
+      method: "POST",
+      body: JSON.stringify(newPayload),
+    });
+    const createData = await response.json();
+
+    dispatch({
+      type: "addSubComment",
+      payload: {
+        scdata: createData.comment,
+        listId: data.list._id,
       },
-      () => {
-        setNewSubCommentSubmitted(false);
-        setSubCommentText("");
-      }
-    );
+    });
+    setNewSubCommentSubmitted(false);
+    setSubCommentText("");
   }
   async function onCommentDelete() {
     setBeingDeleted(true);
@@ -48,13 +61,27 @@ const Comment = ({ data, onNewSubComment, onSubCommentDelete }) => {
       body: JSON.stringify({ id: data._id }),
     });
     const commentResponse = await commentDeleteResponse.json();
+    //TODO: (lots of places) add error handling, like
+    /*
+    https://javascript.info/async-await
+    async function loadJson(url) { // (1)
+  let response = await fetch(url); // (2)
 
+  if (response.status == 200) {
+    let json = await response.json(); // (3)
+    return json;
+  }
+
+  throw new Error(response.status);
+}
+
+loadJson('no-such-user.json')
+  .catch(alert); // Error: 404 (4)
+    */
     dispatch({
       type: "deleteComment",
       payload: data,
     });
-    //since it's being removed from the dom, no need to change state, i think
-    //setBeingDeleted(false);
   }
 
   return (

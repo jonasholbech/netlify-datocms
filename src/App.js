@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { Router } from "@reach/router";
 import { store } from "./reducer/store.js";
 
@@ -7,40 +7,8 @@ import Home from "./comps/Home";
 import List from "./comps/List";
 import "./App.css";
 
-//TODO: split up these functions into helper files
 export default function App() {
   const { globalState, dispatch } = useContext(store);
-  console.log(globalState);
-
-  const onNewSubComment = async (payload, callback) => {
-    const newPayload = {
-      comment: payload.comment,
-      author: globalState.username,
-      parent: payload.commentId,
-    };
-    const response = await fetch("/api/create-subcomment", {
-      method: "POST",
-      body: JSON.stringify(newPayload),
-    });
-    const data = await response.json();
-
-    const nextLists = [...globalState.lists];
-    const whichList = nextLists.findIndex(
-      (list) => list._id === payload.listId
-    );
-    const whichComment = nextLists[whichList].comments.data.findIndex(
-      (comment) => comment._id === payload.commentId
-    );
-    nextLists[whichList].comments.data[whichComment].comments.data = nextLists[
-      whichList
-    ].comments.data[whichComment].comments.data.concat(data.comment);
-
-    dispatch({
-      type: "setLists",
-      payload: nextLists,
-    });
-    callback();
-  };
 
   useEffect(() => {
     if (!globalState.loading) return;
@@ -92,11 +60,7 @@ export default function App() {
       <Nav />
       <Router>
         <Home path="/" />
-        <List
-          onNewSubComment={onNewSubComment}
-          onSubCommentDelete={onSubCommentDelete}
-          path="list/:slug"
-        />
+        <List onSubCommentDelete={onSubCommentDelete} path="list/:slug" />
       </Router>
     </div>
   );

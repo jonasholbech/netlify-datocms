@@ -43,6 +43,20 @@ const StateProvider = ({ children }) => {
       });
       return { ...state, lists: nextLists };
     }
+    if (action.type === "addSubComment") {
+      const nextLists = state.lists.map((list) => {
+        const newList = JSON.parse(JSON.stringify(list));
+        newList.comments.data = newList.comments.data.map((com) => {
+          if (com._id === action.payload.scdata.parentId) {
+            com.comments.data = com.comments.data.concat(action.payload.scdata);
+          }
+          return com;
+        });
+        return newList;
+      });
+      return { ...state, lists: nextLists };
+    }
+
     if (action.type === "add") {
       const items = state.items.concat({
         id: Math.random(),

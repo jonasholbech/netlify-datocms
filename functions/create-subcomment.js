@@ -11,6 +11,7 @@ mutation ($comment: String!, $author:String!, $parent:ID!, $parentId:String!) {
       _id
       comment
       author
+      parentId
     }
   }
 `;

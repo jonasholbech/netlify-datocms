@@ -4,7 +4,7 @@ import Appbar from "muicss/lib/react/appbar";
 import Button from "muicss/lib/react/button";
 import { store } from "../reducer/store.js";
 const Nav = () => {
-  const { globalState, dispatch } = useContext(store);
+  const { globalState } = useContext(store);
   return (
     <Appbar>
       <nav className="Nav">
