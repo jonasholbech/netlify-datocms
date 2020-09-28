@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import StyledMarkdown from "./StyledMarkdown";
 import UseAnimations from "react-useanimations";
 import loading2 from "react-useanimations/lib/loading2";
 import Button from "muicss/lib/react/button";
-const SubComment = ({ sc, username, onSubCommentDelete }) => {
+import { store } from "../reducer/store.js";
+
+const SubComment = ({ sc, onSubCommentDelete }) => {
+  const { globalState, dispatch } = useContext(store);
   const [beingDeleted, setBeingDeleted] = useState(false);
   function deleteSub() {
     setBeingDeleted(true);
@@ -17,7 +20,7 @@ const SubComment = ({ sc, username, onSubCommentDelete }) => {
         <span className="author">{sc.author}</span>
         <StyledMarkdown content={sc.comment} />
       </section>
-      {sc.author === username && (
+      {sc.author === globalState.username && (
         <Button
           size="small"
           onClick={deleteSub}

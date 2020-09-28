@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "@reach/router";
 import usePortal from "react-useportal";
 import UseAnimations from "react-useanimations";
@@ -11,21 +11,23 @@ import Textarea from "muicss/lib/react/textarea";
 import Comment from "./Comment";
 import Instructions from "./Instructions";
 
+import { store } from "../reducer/store.js";
+
 const List = ({
   lists,
   slug,
-  username,
   onNewComment,
   onNewSubComment,
   onCommentDelete,
   onSubCommentDelete,
 }) => {
+  const { globalState, dispatch } = useContext(store);
   const { openPortal, closePortal, isOpen, Portal } = usePortal();
   const [comment, setComment] = useState("");
   const [newCommentSubmitted, setNewCommentSubmitted] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    if (!localStorage.getItem("username")) {
+    if (!globalState.username) {
       navigate(`/`);
     }
   }, [navigate]);
@@ -108,7 +110,6 @@ const List = ({
               onCommentDelete={onCommentDelete}
               onSubCommentDelete={onSubCommentDelete}
               onNewSubComment={onNewSubCommentList}
-              username={username}
               data={comment}
             />
           </Panel>

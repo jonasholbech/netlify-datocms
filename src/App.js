@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Router } from "@reach/router";
+import { store } from "./reducer/store.js";
 
 import Nav from "./comps/Nav";
 import Home from "./comps/Home";
@@ -8,17 +9,13 @@ import "./App.css";
 
 //TODO: split up these functions into helper files
 export default function App() {
-  const [status, setStatus] = useState("loading");
+  const { globalState, dispatch } = useContext(store);
+  console.log(globalState);
 
   const [lists, setLists] = useState([]);
-  const [username, setUsername] = useState(localStorage.getItem("username"));
 
-  const setUsernameCallback = (un) => {
-    setUsername(un);
-    localStorage.setItem("username", un);
-  };
   const onNewComment = async (payload, callback) => {
-    payload.author = username;
+    payload.author = globalState.username;
     const response = await fetch("/api/create-comment", {
       method: "POST",
       body: JSON.stringify(payload),
@@ -35,7 +32,7 @@ export default function App() {
   const onNewSubComment = async (payload, callback) => {
     const newPayload = {
       comment: payload.comment,
-      author: username,
+      author: globalState.username,
       parent: payload.commentId,
     };
     const response = await fetch("/api/create-subcomment", {
@@ -58,19 +55,22 @@ export default function App() {
     setLists(nextLists);
     callback();
   };
-  const getLists = async () => {
-    const response = await fetch("/api/get-all-lists");
-    const data = await response.json();
-    console.table(data.lists);
-    setLists(data.lists);
-    setStatus("loaded");
-  };
 
   useEffect(() => {
-    if (status !== "loading") return;
-    if (!username) return;
+    if (!globalState.loading) return;
+    if (!globalState.username) return;
+    const getLists = async () => {
+      const response = await fetch("/api/get-all-lists");
+      const data = await response.json();
+      console.table(data.lists);
+      setLists(data.lists);
+      dispatch({
+        type: "loaded",
+        payload: "",
+      });
+    };
     getLists();
-  }, [status, username]);
+  }, [globalState.loading, globalState.username, dispatch]);
 
   async function onSubCommentDelete(id, callback) {
     const promise = await fetch("/api/delete-subcomment", {
@@ -126,17 +126,16 @@ export default function App() {
   }
   return (
     <div className="App">
-      <Nav lists={lists} username={username} />
+      <Nav lists={lists} />
 
       <Router>
-        <Home path="/" username={username} setUsername={setUsernameCallback} />
+        <Home path="/" />
         <List
           onNewComment={onNewComment}
           onCommentDelete={onCommentDelete}
           onNewSubComment={onNewSubComment}
           onSubCommentDelete={onSubCommentDelete}
           lists={lists}
-          username={username}
           path="list/:slug"
         />
       </Router>

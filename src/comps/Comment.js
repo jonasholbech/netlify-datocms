@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import StyledMarkdown from "./StyledMarkdown";
 import UseAnimations from "react-useanimations";
 import loading2 from "react-useanimations/lib/loading2";
@@ -6,14 +6,15 @@ import SubComment from "./SubComment";
 import Button from "muicss/lib/react/button";
 import Form from "muicss/lib/react/form";
 import Textarea from "muicss/lib/react/textarea";
+import { store } from "../reducer/store.js";
 
 const Comment = ({
   data,
-  username,
   onNewSubComment,
   onCommentDelete,
   onSubCommentDelete,
 }) => {
+  const { globalState, dispatch } = useContext(store);
   const [subCommentText, setSubCommentText] = useState("");
   const [beingDeleted, setBeingDeleted] = useState(false);
   const [newSubCommentSubmitted, setNewSubCommentSubmitted] = useState(false);
@@ -42,7 +43,7 @@ const Comment = ({
     <article className="Comment">
       <header>
         <h2 className="author">{data.author}</h2>
-        {data.author === username && (
+        {data.author === globalState.username && (
           <Button
             variant="raised"
             color="danger"
@@ -73,7 +74,6 @@ const Comment = ({
               key={sc._id}
               sc={sc}
               onSubCommentDelete={onSubCommentDelete}
-              username={username}
             />
           ))}
           <li>

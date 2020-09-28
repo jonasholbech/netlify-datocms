@@ -1,14 +1,20 @@
-import React, { useState } from "react";
-const Home = ({ username, setUsername }) => {
+import React, { useState, useContext } from "react";
+import { store } from "../reducer/store.js";
+const Home = () => {
+  const { globalState, dispatch } = useContext(store);
   const [userNameInput, setUserNameInput] = useState("");
 
   function submit(e) {
     e.preventDefault();
-    setUsername(userNameInput);
+    dispatch({
+      type: "setUsername",
+      payload: userNameInput,
+    });
+    setUserNameInput("");
   }
   return (
     <div className="Home">
-      {!username ? (
+      {!globalState.username ? (
         <>
           <h1>
             Hej, kan se det er første gang du er her, hvad må jeg kalde dig?
@@ -23,7 +29,7 @@ const Home = ({ username, setUsername }) => {
           </form>
         </>
       ) : (
-        <h1>Velkommen tilbage {username}</h1>
+        <h1>Velkommen {globalState.username}</h1>
       )}
     </div>
   );
