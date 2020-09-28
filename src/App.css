@@ -1,6 +1,10 @@
 * {
   box-sizing: border-box;
 }
+summary > * {
+  display: inline-block;
+  cursor: pointer;
+}
 label,
 button,
 input,
@@ -29,6 +33,14 @@ main {
   padding-top: 8px;
   align-content: center;
   justify-content: space-around;
+}
+.List {
+  position: relative;
+}
+.List .instructions {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 .Comment header {
   display: flex;

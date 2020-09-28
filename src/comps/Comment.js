@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import StyledMarkdown from "./StyledMarkdown";
 import SubComment from "./SubComment";
 import Button from "muicss/lib/react/button";
+import Form from "muicss/lib/react/form";
+import Textarea from "muicss/lib/react/textarea";
+
 const Comment = ({ data, username, onNewSubComment, onCommentDelete }) => {
   const [subCommentText, setSubCommentText] = useState("");
   function submit(e) {
@@ -28,17 +31,19 @@ const Comment = ({ data, username, onNewSubComment, onCommentDelete }) => {
       </header>
       <StyledMarkdown content={data.comment} />
 
-      <div className="subcomments">
-        <h3>Kommentarer</h3>
+      <details className="subcomments">
+        <summary>
+          <h3>Kommentarer ({data.comments.data.length})</h3>
+        </summary>
         <ol>
           {data.comments.data.map((sc) => (
             <SubComment key={sc._id} sc={sc} username={username} />
           ))}
           <li>
-            <form onSubmit={submit}>
+            <Form onSubmit={submit}>
               <label>
                 Smid et svar:
-                <textarea
+                <Textarea
                   value={subCommentText}
                   onChange={(e) => setSubCommentText(e.target.value)}
                 />
@@ -52,10 +57,10 @@ const Comment = ({ data, username, onNewSubComment, onCommentDelete }) => {
               >
                 Svar!
               </Button>
-            </form>
+            </Form>
           </li>
         </ol>
-      </div>
+      </details>
     </article>
   );
 };

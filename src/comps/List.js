@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 import { useNavigate } from "@reach/router";
 import Button from "muicss/lib/react/button";
 import Panel from "muicss/lib/react/panel";
+import Form from "muicss/lib/react/form";
+import Textarea from "muicss/lib/react/textarea";
+
 import Comment from "./Comment";
 
 const List = ({
@@ -29,6 +33,7 @@ const List = ({
     });
     setComment("");
   };
+  const showModal = (e) => {};
   const onNewSubCommentList = (payload) => {
     payload.listId = thisList._id;
     onNewSubComment(payload);
@@ -40,10 +45,10 @@ const List = ({
     <main className="List">
       <h1>{thisList.title}</h1>
       <Panel>
-        <form onSubmit={submit}>
+        <Form onSubmit={submit}>
           <label>
             Skriv en besked
-            <textarea
+            <Textarea
               className="listTextarea"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
@@ -56,7 +61,16 @@ const List = ({
           >
             Gem
           </Button>
-        </form>
+        </Form>
+        <Button
+          className="instructions"
+          size="small"
+          variant="fab"
+          color="accent"
+          onClick={showModal}
+        >
+          ?
+        </Button>
       </Panel>
       {thisList.comments.data.map((comment) => {
         return (
