@@ -3,7 +3,7 @@ import React, { createContext, useReducer } from "react";
 const initialState = {
   loading: true,
   lists: [],
-  godMode: localStorage.getItem("godmode") === "true" ? true : false,
+  godMode: Boolean(JSON.parse(localStorage.getItem("godmode"))),
   username: localStorage.getItem("username"),
 };
 const store = createContext(initialState);
