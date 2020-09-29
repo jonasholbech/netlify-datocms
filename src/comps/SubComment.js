@@ -5,7 +5,7 @@ import loading2 from "react-useanimations/lib/loading2";
 import Button from "muicss/lib/react/button";
 import { store } from "../reducer/store.js";
 
-const SubComment = ({ sc }) => {
+const SubComment = React.memo(function SubComment({ sc }) {
   const { globalState, dispatch } = useContext(store);
   const [beingDeleted, setBeingDeleted] = useState(false);
 
@@ -52,5 +52,14 @@ const SubComment = ({ sc }) => {
       )}
     </li>
   );
-};
+}, areEqual);
+function areEqual(prevProps, nextProps) {
+  console.log(prevProps.sc._id === nextProps.sc._id);
+  return prevProps.sc._id === nextProps.sc._id;
+  /*
+  return true if passing nextProps to render would return
+  the same result as passing prevProps to render,
+  otherwise return false
+  */
+}
 export default SubComment;
