@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "@reach/router";
+import UseAnimations from "react-useanimations";
+import activity from "react-useanimations/lib/activity";
 import Appbar from "muicss/lib/react/appbar";
 import Button from "muicss/lib/react/button";
 import { store } from "../reducer/store.js";
@@ -15,6 +17,14 @@ const Nav = () => {
             </Link>
           );
         })}
+        {globalState.loading && (
+          <UseAnimations
+            animation={activity}
+            className="useAnimations"
+            size={30}
+            strokeColor="white"
+          />
+        )}
       </nav>
     </Appbar>
   );

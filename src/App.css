@@ -51,6 +51,14 @@ main {
   padding-top: 8px;
   align-content: center;
   justify-content: space-around;
+  position: relative;
+}
+.Nav .useAnimations {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #2196f3;
+  z-index: 200;
 }
 .List {
   position: relative;

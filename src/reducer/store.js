@@ -12,6 +12,9 @@ const StateProvider = ({ children }) => {
     if (action.type === "loaded") {
       return { ...state, loading: false };
     }
+    if (action.type === "loading") {
+      return { ...state, loading: true };
+    }
     if (action.type === "setUsername") {
       localStorage.setItem("username", action.payload);
       return { ...state, username: action.payload };

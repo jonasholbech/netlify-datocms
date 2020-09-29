@@ -1,7 +1,10 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Router } from "@reach/router";
-import { store } from "./reducer/store.js";
+import useInterval from "@use-it/interval";
 
+import { store } from "./reducer/store.js";
+import getLists from "./utils/getLists";
+import { fetchInterval } from "./utils/settings";
 import Nav from "./comps/Nav";
 import Home from "./comps/Home";
 import List from "./comps/List";
@@ -10,24 +13,17 @@ import "./App.css";
 export default function App() {
   const { globalState, dispatch } = useContext(store);
 
+  useInterval(() => {
+    if (!globalState.username) {
+      return;
+    }
+    dispatch({ type: "loading" });
+    getLists(dispatch);
+  }, fetchInterval);
+
   useEffect(() => {
-    if (!globalState.loading || !globalState.username) return;
-
-    const getLists = async () => {
-      const response = await fetch("/api/get-all-lists");
-      const data = await response.json();
-      dispatch({
-        type: "setLists",
-        payload: data.lists,
-      });
-      dispatch({
-        type: "loaded",
-        payload: "",
-      });
-    };
-    getLists();
-  }, [globalState.loading, globalState.username, dispatch]);
-
+    getLists(dispatch);
+  }, [globalState.username, dispatch]);
   return (
     <div className="App">
       <Nav />
