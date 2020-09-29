@@ -61,43 +61,45 @@ const List = ({ slug }) => {
         </Portal>
       )}
       <h1>{thisList.title}</h1>
-      <Panel>
-        <Form onSubmit={submit}>
-          <label>
-            Skriv en besked
-            <Textarea
-              className="listTextarea"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-          </label>
-          <Button
-            disabled={comment.length < 2}
-            variant="raised"
-            color="primary"
-          >
-            {newCommentSubmitted ? (
-              <UseAnimations
-                animation={loading2}
-                className="useAnimations"
-                size={30}
-                strokeColor="white"
+      {(slug !== "de-voksnes" || globalState.godMode) && (
+        <Panel>
+          <Form onSubmit={submit}>
+            <label>
+              Skriv en besked
+              <Textarea
+                className="listTextarea"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
               />
-            ) : (
-              "Gem"
-            )}
+            </label>
+            <Button
+              disabled={comment.length < 2}
+              variant="raised"
+              color="primary"
+            >
+              {newCommentSubmitted ? (
+                <UseAnimations
+                  animation={loading2}
+                  className="useAnimations"
+                  size={30}
+                  strokeColor="white"
+                />
+              ) : (
+                "Gem"
+              )}
+            </Button>
+          </Form>
+          <Button
+            className="instructions"
+            size="small"
+            variant="fab"
+            color="accent"
+            onClick={openPortal}
+          >
+            ?
           </Button>
-        </Form>
-        <Button
-          className="instructions"
-          size="small"
-          variant="fab"
-          color="accent"
-          onClick={openPortal}
-        >
-          ?
-        </Button>
-      </Panel>
+        </Panel>
+      )}
       {thisList.comments.data.map((comment) => {
         return (
           <Panel key={comment._id}>
