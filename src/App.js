@@ -8,6 +8,7 @@ import { fetchInterval } from "./utils/settings";
 import Nav from "./comps/Nav";
 import Home from "./comps/Home";
 import List from "./comps/List";
+import GodMode from "./comps/GodMode";
 import "./App.css";
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
       <Router>
         <Home path="/" />
         <List path="list/:slug" />
+        <GodMode path="/godmode" />
       </Router>
     </div>
   );

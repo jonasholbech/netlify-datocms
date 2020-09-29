@@ -91,7 +91,7 @@ loadJson('no-such-user.json')
     <article className="Comment">
       <header>
         <h2 className="author">{data.author}</h2>
-        {data.author === globalState.username && (
+        {(data.author === globalState.username || globalState.godMode) && (
           <Button variant="raised" color="danger" onClick={onCommentDelete}>
             {beingDeleted ? (
               <UseAnimations

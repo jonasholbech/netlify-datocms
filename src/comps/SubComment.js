@@ -31,7 +31,7 @@ const SubComment = ({ sc }) => {
         <span className="author">{sc.author}</span>
         <StyledMarkdown content={sc.comment} />
       </section>
-      {sc.author === globalState.username && (
+      {(sc.author === globalState.username || globalState.godMode) && (
         <Button
           size="small"
           onClick={onSubCommentDelete}

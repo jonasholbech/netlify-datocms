@@ -3,6 +3,7 @@ import React, { createContext, useReducer } from "react";
 const initialState = {
   loading: true,
   lists: [],
+  godMode: localStorage.getItem("godmode") === "true" ? true : false,
   username: localStorage.getItem("username"),
 };
 const store = createContext(initialState);
@@ -14,6 +15,9 @@ const StateProvider = ({ children }) => {
     }
     if (action.type === "loading") {
       return { ...state, loading: true };
+    }
+    if (action.type === "toggleGodMode") {
+      return { ...state, godMode: !state.godMode };
     }
     if (action.type === "setUsername") {
       localStorage.setItem("username", action.payload);
