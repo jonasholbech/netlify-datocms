@@ -5,13 +5,24 @@ import loading2 from "react-useanimations/lib/loading2";
 import Button from "muicss/lib/react/button";
 import { store } from "../reducer/store.js";
 
-const SubComment = ({ sc, onSubCommentDelete }) => {
-  const { globalState } = useContext(store);
+const SubComment = ({ sc }) => {
+  const { globalState, dispatch } = useContext(store);
   const [beingDeleted, setBeingDeleted] = useState(false);
-  function deleteSub() {
+
+  async function onSubCommentDelete() {
     setBeingDeleted(true);
-    onSubCommentDelete(sc._id, () => {
-      setBeingDeleted(false);
+    const promise = await fetch("/api/delete-subcomment", {
+      method: "POST",
+      body: JSON.stringify({ id: sc._id }),
+    });
+    const data = await promise.json();
+    dispatch({
+      type: "deleteSubComment",
+      payload: {
+        scID: data.comment._id,
+        coID: data.comment.parent._id,
+        liID: data.comment.parent.list._id,
+      },
     });
   }
   return (
@@ -23,7 +34,7 @@ const SubComment = ({ sc, onSubCommentDelete }) => {
       {sc.author === globalState.username && (
         <Button
           size="small"
-          onClick={deleteSub}
+          onClick={onSubCommentDelete}
           variant="raised"
           color="danger"
         >

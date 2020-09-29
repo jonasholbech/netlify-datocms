@@ -8,7 +8,6 @@ const initialState = {
 };
 const store = createContext(initialState);
 const { Provider } = store;
-//TODO: lots of leftovers (for copy paste purposes)
 const StateProvider = ({ children }) => {
   const [globalState, dispatch] = useReducer((state = initialState, action) => {
     if (action.type === "loaded") {
@@ -55,38 +54,22 @@ const StateProvider = ({ children }) => {
       });
       return { ...state, lists: nextLists };
     }
-
-    if (action.type === "add") {
-      const items = state.items.concat({
-        id: Math.random(),
-        header: action.payload,
-        completed: false,
-      });
-      return { ...state, items: items };
-    }
-    if (action.type === "toggle") {
-      const items = state.items.map((item) => {
-        console.log(item);
-        if (item.id === action.payload) {
-          item.completed = !item.completed;
-        }
-        return item;
-      });
-      return { ...state, items: items };
+    if (action.type === "deleteSubComment") {
+      const nextLists = [...state.lists];
+      const whichList = nextLists.findIndex(
+        (list) => list._id === action.payload.liID
+      );
+      const whichComment = nextLists[whichList].comments.data.findIndex(
+        (com) => com._id === action.payload.coID
+      );
+      nextLists[whichList].comments.data[
+        whichComment
+      ].comments.data = nextLists[whichList].comments.data[
+        whichComment
+      ].comments.data.filter((com) => com._id !== action.payload.scID);
+      return { ...state, lists: nextLists };
     }
 
-    if (action.type === "delete") {
-      const items = state.items.filter((item) => {
-        return item.id !== action.payload;
-      });
-      return { ...state, items: items };
-    }
-    if (action.type === "login") {
-      return { ...state, loggedIn: true };
-    }
-    if (action.type === "logout") {
-      return { ...state, loggedIn: false };
-    }
     /*  default:
         throw new Error();*/
   }, initialState);

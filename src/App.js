@@ -11,8 +11,8 @@ export default function App() {
   const { globalState, dispatch } = useContext(store);
 
   useEffect(() => {
-    if (!globalState.loading) return;
-    if (!globalState.username) return;
+    if (!globalState.loading || !globalState.username) return;
+
     const getLists = async () => {
       const response = await fetch("/api/get-all-lists");
       const data = await response.json();
@@ -28,39 +28,12 @@ export default function App() {
     getLists();
   }, [globalState.loading, globalState.username, dispatch]);
 
-  async function onSubCommentDelete(id, callback) {
-    const promise = await fetch("/api/delete-subcomment", {
-      method: "POST",
-      body: JSON.stringify({ id }),
-    });
-    const data = await promise.json();
-    const scId = data.comment._id;
-    const coId = data.comment.parent._id;
-    const liId = data.comment.parent.list._id;
-    const nextLists = [...globalState.lists];
-    const whichList = nextLists.findIndex((list) => list._id === liId);
-    const whichComment = nextLists[whichList].comments.data.findIndex(
-      (com) => com._id === coId
-    );
-    nextLists[whichList].comments.data[whichComment].comments.data = nextLists[
-      whichList
-    ].comments.data[whichComment].comments.data.filter(
-      (com) => com._id !== scId
-    );
-    dispatch({
-      type: "setLists",
-      payload: nextLists,
-    });
-
-    callback();
-  }
-
   return (
     <div className="App">
       <Nav />
       <Router>
         <Home path="/" />
-        <List onSubCommentDelete={onSubCommentDelete} path="list/:slug" />
+        <List path="list/:slug" />
       </Router>
     </div>
   );

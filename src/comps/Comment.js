@@ -8,7 +8,7 @@ import Form from "muicss/lib/react/form";
 import Textarea from "muicss/lib/react/textarea";
 import { store } from "../reducer/store.js";
 
-const Comment = ({ data, onSubCommentDelete }) => {
+const Comment = ({ data }) => {
   const { globalState, dispatch } = useContext(store);
   const [subCommentText, setSubCommentText] = useState("");
   const [beingDeleted, setBeingDeleted] = useState(false);
@@ -114,11 +114,7 @@ loadJson('no-such-user.json')
         </summary>
         <ol>
           {data.comments.data.map((sc) => (
-            <SubComment
-              key={sc._id}
-              sc={sc}
-              onSubCommentDelete={onSubCommentDelete}
-            />
+            <SubComment key={sc._id} sc={sc} />
           ))}
           <li>
             <Form onSubmit={submit}>
