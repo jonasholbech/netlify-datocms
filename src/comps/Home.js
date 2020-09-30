@@ -4,7 +4,7 @@ import Input from "muicss/lib/react/input";
 import Button from "muicss/lib/react/button";
 
 import { store } from "../reducer/store.js";
-const Home = () => {
+export const Home = () => {
   const { globalState, dispatch } = useContext(store);
   const [userNameInput, setUserNameInput] = useState("");
 
@@ -51,4 +51,3 @@ const Home = () => {
     </div>
   );
 };
-export default Home;
