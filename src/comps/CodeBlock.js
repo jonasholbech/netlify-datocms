@@ -1,13 +1,19 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
+//v1 hent ALT
 //import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+//import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
 // TODO: https://github.com/react-syntax-highlighter/react-syntax-highlighter#light-build IMPORTANT
 
-//import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
-import { PrismAsyncLight as SyntaxHighlighter } from "react-syntax-highlighter";
+//v2 hent light
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
 import { tomorrow as dark } from "react-syntax-highlighter/dist/cjs/styles/prism";
-//import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
+
+//v3 hent light, async
+// import { PrismAsyncLight as SyntaxHighlighter } from "react-syntax-highlighter";
+// import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
+// import { tomorrow as dark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 SyntaxHighlighter.registerLanguage("python", python);
 
