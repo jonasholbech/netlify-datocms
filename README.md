@@ -8,5 +8,8 @@
 
 ## TODO
 
-simplify loading (more smaller queries) => simpler state
+simplify loading graphql (more smaller queries) => simpler state
 collapse code blocks: https://www.npmjs.com/package/react-syntax-highlighter kan være noget derinde jeg kan bruge
+
+lazy load på forside: ✓
+lazy load på submoduler: ❓ vil jeg det?
