@@ -30,8 +30,8 @@ const StateProvider = ({ children }) => {
       const newLists = state.lists.map((list) => {
         //Deep clone
         let newList = JSON.parse(JSON.stringify(list));
-        if (newList._id === action.payload.list._id) {
-          newList.comments.data = newList.comments.data.concat(action.payload);
+        if (newList.id === action.payload.list) {
+          newList.comments = newList.comments.concat(action.payload);
         }
         return newList;
       });
@@ -40,8 +40,8 @@ const StateProvider = ({ children }) => {
     if (action.type === "deleteComment") {
       const nextLists = state.lists.map((list) => {
         let newList = JSON.parse(JSON.stringify(list));
-        newList.comments.data = newList.comments.data.filter(
-          (com) => com._id !== action.payload._id
+        newList.comments = newList.comments.filter(
+          (com) => com.id !== action.payload.id
         );
         return newList;
       });
@@ -50,9 +50,9 @@ const StateProvider = ({ children }) => {
     if (action.type === "addSubComment") {
       const nextLists = state.lists.map((list) => {
         const newList = JSON.parse(JSON.stringify(list));
-        newList.comments.data = newList.comments.data.map((com) => {
-          if (com._id === action.payload.scdata.parentId) {
-            com.comments.data = com.comments.data.concat(action.payload.scdata);
+        newList.comments = newList.comments.map((com) => {
+          if (com.id === action.payload.scdata.parentid) {
+            com.comments = com.comments.concat(action.payload.scdata);
           }
           return com;
         });
@@ -63,16 +63,16 @@ const StateProvider = ({ children }) => {
     if (action.type === "deleteSubComment") {
       const nextLists = [...state.lists];
       const whichList = nextLists.findIndex(
-        (list) => list._id === action.payload.liID
+        (list) => list.id === action.payload.liID
       );
-      const whichComment = nextLists[whichList].comments.data.findIndex(
-        (com) => com._id === action.payload.coID
+      const whichComment = nextLists[whichList].comments.findIndex(
+        (com) => com.id === action.payload.coID
       );
-      nextLists[whichList].comments.data[
-        whichComment
-      ].comments.data = nextLists[whichList].comments.data[
-        whichComment
-      ].comments.data.filter((com) => com._id !== action.payload.scID);
+      nextLists[whichList].comments[whichComment].comments = nextLists[
+        whichList
+      ].comments[whichComment].comments.filter(
+        (com) => com.id !== action.payload.scID
+      );
       return { ...state, lists: nextLists };
     }
 

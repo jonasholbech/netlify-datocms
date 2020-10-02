@@ -1,46 +1,32 @@
-const sendQuery = require("./helpers/send-query");
-
-const CREATE_COMMENT = `
-mutation ($comment: String!, $author: String!, $list: ID!) {
-    createComment(data: {
-      comment:$comment
-      author:$author
-      list: {connect:$list}
-    }) {
-      _id
-      comment
-      author
-      comments {
-        data {
-          _id
-          comment
-          author
-        }
-      }
-      list {
-        _id
-        title
-      }
-    }
-  }
-`;
+require("dotenv").config();
+const { SiteClient } = require("datocms-client");
+const client = new SiteClient(process.env.DATO_CMS_CONTENT_KEY);
 exports.handler = async (event) => {
   const { comment, author, list } = JSON.parse(event.body);
-  const { data, errors } = await sendQuery(CREATE_COMMENT, {
-    comment,
-    author,
-    list,
-  });
+  async function createRecord() {
+    const record = await client.items.create({
+      itemType: "321426", // model ID
+      comment,
+      author,
+      list,
+      comments: [],
+    });
+    const parentRecord = await client.items.find(list);
 
-  if (errors) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify(errors),
-    };
+    try {
+      client.items.update(list, {
+        comments: parentRecord.comments.concat(record.id),
+      });
+      return {
+        statusCode: 200,
+        body: JSON.stringify(record),
+      };
+    } catch (e) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify(e),
+      };
+    }
   }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ comment: data.createComment }),
-  };
+  return createRecord();
 };

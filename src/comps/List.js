@@ -32,7 +32,7 @@ const List = ({ slug }) => {
     setNewCommentSubmitted(true);
     const payload = {
       comment,
-      list: thisList._id,
+      list: thisList.id,
       author: globalState.username,
     };
     const response = await fetch("/api/create-comment", {
@@ -42,7 +42,7 @@ const List = ({ slug }) => {
     const data = await response.json();
     dispatch({
       type: "addComment",
-      payload: data.comment,
+      payload: data,
     });
     setNewCommentSubmitted(false);
     setComment("");
@@ -100,9 +100,9 @@ const List = ({ slug }) => {
           </Button>
         </Panel>
       )}
-      {thisList.comments.data.map((comment) => {
+      {thisList.comments.map((comment) => {
         return (
-          <Panel key={comment._id}>
+          <Panel key={comment.id}>
             <Comment data={comment} />
           </Panel>
         );

@@ -20,8 +20,7 @@ const Comment = ({ data }) => {
     const newPayload = {
       comment: subCommentText,
       author: globalState.username,
-      parent: data._id,
-      parentId: data._id,
+      parentid: data.id,
     };
 
     const response = await fetch("/api/create-subcomment", {
@@ -33,8 +32,8 @@ const Comment = ({ data }) => {
     dispatch({
       type: "addSubComment",
       payload: {
-        scdata: createData.comment,
-        listId: data.list._id,
+        scdata: createData,
+        listId: data.list.id,
       },
     });
     setNewSubCommentSubmitted(false);
@@ -42,10 +41,10 @@ const Comment = ({ data }) => {
   }
   async function onCommentDelete() {
     setBeingDeleted(true);
-    const response = await fetch("/api/get-subcomments", {
+    /*const response = await fetch("/api/get-subcomments", {
       method: "POST",
       body: JSON.stringify({
-        id: data._id,
+        id: data.id,
       }),
     });
     const getSCData = await response.json();
@@ -55,11 +54,11 @@ const Comment = ({ data }) => {
       body: JSON.stringify({ ids: getSCData.subcomments }),
     });
     await batchDeleteResponse.json();
-
+    */
     //const commentDeleteResponse =
     await fetch("/api/delete-comment", {
       method: "POST",
-      body: JSON.stringify({ id: data._id }),
+      body: JSON.stringify({ id: data.id }),
     });
 
     //const commentResponse = await commentDeleteResponse.json();
@@ -110,11 +109,11 @@ loadJson('no-such-user.json')
 
       <details className="subcomments">
         <summary>
-          <h3>Kommentarer ({data.comments.data.length})</h3>
+          <h3>Kommentarer ({data.comments.length})</h3>
         </summary>
         <ol>
-          {data.comments.data.map((sc) => (
-            <SubComment key={sc._id} sc={sc} />
+          {data.comments.map((sc) => (
+            <SubComment key={sc.id} sc={sc} />
           ))}
           <li>
             <Form onSubmit={submit}>

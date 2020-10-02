@@ -3,10 +3,10 @@ const axios = require("axios");
 
 module.exports = async (query, variables) => {
   const result = await axios({
-    url: "https://graphql.datocms.com/",
+    url: "https://graphql.fauna.com/graphql",
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.DATO_CMS_CONTENT_KEY}`,
+      Authorization: `Bearer ${process.env.FAUNA_SERVER_SECRET}`,
     },
     data: {
       query,

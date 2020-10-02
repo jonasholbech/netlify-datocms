@@ -1,33 +1,26 @@
-const sendQuery = require("./helpers/send-query");
-
-const DELETE_SUBCOMMENT = `
-mutation ($id: ID!) {
-    deleteSubComment(id:$id){
-        _id
-        parent {
-          _id
-          list {
-            _id
-          }
-        }
-      }
-  }
-`;
+require("dotenv").config();
+const { SiteClient } = require("datocms-client");
+const client = new SiteClient(process.env.DATO_CMS_CONTENT_KEY);
 exports.handler = async (event) => {
   const { id } = JSON.parse(event.body);
-  const { data, errors } = await sendQuery(DELETE_SUBCOMMENT, {
-    id,
-  });
-
-  if (errors) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify(errors),
-    };
+  console.log(id);
+  async function deleteRecord() {
+    //jeg behøver ikke slette SC fra faderen, det sker automatisk
+    const item = await client.items.destroy(id);
+    if (item) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify(item),
+      };
+    } else {
+      return {
+        statusCode: 500, //TODO: den her bliver nok aldrig ramt
+        body: JSON.stringify(item),
+      };
+    }
   }
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ comment: data.deleteSubComment }),
-  };
+  const retVal = await deleteRecord();
+  console.log({ retVal });
+  return retVal;
 };

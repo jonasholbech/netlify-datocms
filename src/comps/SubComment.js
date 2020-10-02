@@ -13,9 +13,10 @@ const SubComment = ({ sc }) => {
     setBeingDeleted(true);
     const promise = await fetch("/api/delete-subcomment", {
       method: "POST",
-      body: JSON.stringify({ id: sc._id }),
+      body: JSON.stringify({ id: sc.id }),
     });
     const data = await promise.json();
+    console.log(data);
     dispatch({
       type: "deleteSubComment",
       payload: {

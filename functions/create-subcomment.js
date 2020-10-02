@@ -1,40 +1,31 @@
-const sendQuery = require("./helpers/send-query");
+require("dotenv").config();
+const { SiteClient } = require("datocms-client");
+const client = new SiteClient(process.env.DATO_CMS_CONTENT_KEY);
+exports.handler = async (event) => {
+  const { comment, author, parentid } = JSON.parse(event.body);
+  async function createRecord() {
+    try {
+      const record = await client.items.create({
+        itemType: "321427", // model ID
+        comment,
+        author,
+        parentid,
+      });
+      const parentRecord = await client.items.find(parentid);
 
-const CREATE_SUBCOMMENT = `
-mutation ($comment: String!, $author:String!, $parent:ID!, $parentId:String!) {
-    createSubComment(data: {
-      comment:$comment
-      author:$author
-      parent: {connect:$parent}
-      parentId:$parentId
-    }) {
-      _id
-      comment
-      author
-      parentId
+      client.items.update(parentid, {
+        comments: parentRecord.comments.concat(record.id),
+      });
+      return {
+        statusCode: 200,
+        body: JSON.stringify(record),
+      };
+    } catch (e) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify(e),
+      };
     }
   }
-`;
-exports.handler = async (event) => {
-  const { comment, author, parent } = JSON.parse(event.body);
-  let parentId = parent.toString();
-
-  const { data, errors } = await sendQuery(CREATE_SUBCOMMENT, {
-    comment,
-    author,
-    parent,
-    parentId,
-  });
-
-  if (errors) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify(errors),
-    };
-  }
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ comment: data.createSubComment }),
-  };
+  return createRecord();
 };

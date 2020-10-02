@@ -1,31 +1,28 @@
 const sendQuery = require("./helpers/send-query");
 
-const GET_ALL_COMMENTS = `
+const GET_ALL_DATA = `
 query {
     allLists {
-      data {
-        _id
-        _ts
-        title
-        slug
+      createdAt
+      id
+      title
+      slug
+      comments {
+        id
+        author
+        comment
+        createdAt
+        list {
+          id
+        }
         comments {
-          data {
-            _id
-            author
-            comment
-            _ts
-            list {
-              _id
-            }
-            comments {
-              data {
-                _id
-                comment
-                author
-                parentId
-              }
-            }
+          id
+          comment
+          author
+          parentid {
+            id
           }
+          createdAt
         }
       }
     }
@@ -33,7 +30,7 @@ query {
 `;
 
 exports.handler = async () => {
-  const { data, errors } = await sendQuery(GET_ALL_COMMENTS);
+  const { data, errors } = await sendQuery(GET_ALL_DATA);
 
   if (errors) {
     return {
@@ -44,6 +41,6 @@ exports.handler = async () => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ lists: data.allLists.data }),
+    body: JSON.stringify({ lists: data.allLists }),
   };
 };

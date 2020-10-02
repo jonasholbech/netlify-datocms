@@ -27,7 +27,7 @@ const AsyncGodMode = Loadable({
 
 export default function App() {
   const { globalState, dispatch } = useContext(store);
-
+  /*
   useInterval(() => {
     if (!globalState.username) {
       return;
@@ -35,7 +35,7 @@ export default function App() {
     dispatch({ type: "loading" });
     getLists(dispatch);
   }, fetchInterval);
-
+  */
   useEffect(() => {
     getLists(dispatch);
   }, [globalState.username, dispatch]);

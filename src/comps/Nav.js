@@ -12,7 +12,7 @@ const Nav = () => {
       <nav className="Nav">
         {globalState.lists.map((list) => {
           return (
-            <Link key={list._id} to={`/list/${list.slug}`}>
+            <Link key={list.id} to={`/list/${list.slug}`}>
               <Button>{list.title}</Button>
             </Link>
           );
