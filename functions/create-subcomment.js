@@ -3,6 +3,7 @@ const { SiteClient } = require("datocms-client");
 const client = new SiteClient(process.env.DATO_CMS_CONTENT_KEY);
 exports.handler = async (event) => {
   const { comment, author, parentid } = JSON.parse(event.body);
+
   async function createRecord() {
     try {
       const record = await client.items.create({

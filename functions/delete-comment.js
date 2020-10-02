@@ -1,51 +1,39 @@
-//TODO: vend tilbage til den her når du kan indsætte subcomments
 require("dotenv").config();
 const { SiteClient } = require("datocms-client");
 const client = new SiteClient(process.env.DATO_CMS_CONTENT_KEY);
 exports.handler = async (event) => {
   const { id } = JSON.parse(event.body);
-  async function createRecord() {
-    
-      const children = await client.items.all({
-        filter: {
-          type: "subcomment",
-          fields: {
-            parentid: {
-              eq: id,
-            },
-          },
-        },
-      });
-      const childIds = children.map((c) => c.id);
-      client.items
-        .batchDestroy({
-          "filter[ids]": childIds.join(","),
-        })
-        .catch((error) => {
-          return {
-            statusCode: 500,
-            body: JSON.stringify(e),
-          };
-        });
-      client.items
-        .destroy(id)
-        .then((item) => {
-          console.log(item);
-        })
-        .catch((error) => {
-          return {
-            statusCode: 500,
-            body: JSON.stringify(e),
-          };
-        });
 
+  async function deleteRecord() {
+    //jeg behøver ikke slette SC fra faderen, det sker automatisk
+    const children = await client.items.all({
+      filter: {
+        type: "subcomment",
+        fields: {
+          parentid: { eq: id },
+        },
+      },
+    });
+    console.log(children);
+    const ids = children.map((child) => child.id);
+    const batch = await client.items.batchDestroy({
+      "filter[ids]": ids.join(","),
+    });
+    const item = await client.items.destroy(id);
+    if (item) {
       return {
         statusCode: 200,
-        body: JSON.stringify(record),
+        body: JSON.stringify(item),
       };
-   
-      
+    } else {
+      return {
+        statusCode: 500, //TODO: den her bliver nok aldrig ramt
+        body: JSON.stringify(item),
+      };
     }
   }
-  return createRecord();
+
+  const retVal = await deleteRecord();
+  console.log({ retVal });
+  return retVal;
 };

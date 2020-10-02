@@ -61,33 +61,7 @@ const StateProvider = ({ children }) => {
       return { ...state, lists: nextLists };
     }
     if (action.type === "deleteSubComment") {
-      /*
-      {
-  "id": "7774588",
-  "comment": "zsdfxgchgv",
-  "author": "Jonas",
-  "parentid": "7627421",
-  "updatedAt": "2020-10-02T09:16:13.794+02:00",
-  "createdAt": "2020-10-02T09:16:13.776+02:00",
-  "meta": {
-    "createdAt": "2020-10-02T09:16:13.776+02:00",
-    "updatedAt": "2020-10-02T09:16:13.794+02:00",
-    "publishedAt": "2020-10-02T09:16:13.791+02:00",
-    "firstPublishedAt": "2020-10-02T09:16:13.791+02:00",
-    "publicationScheduledAt": null,
-    "status": "published",
-    "isValid": true,
-    "currentVersion": "14808952"
-  },
-  "itemType": "321427",
-  "creator": {
-    "id": "71323",
-    "type": "access_token"
-  }
-}
-      */
       const { scID, coID } = action.payload;
-
       const nextLists = state.lists.map((list) => {
         const newList = JSON.parse(JSON.stringify(list));
         newList.comments = newList.comments.map((comment) => {

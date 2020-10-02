@@ -41,7 +41,16 @@ const Comment = ({ data }) => {
   }
   async function onCommentDelete() {
     setBeingDeleted(true);
-    /*const response = await fetch("/api/get-subcomments", {
+    await fetch("/api/delete-comment", {
+      method: "POST",
+      body: JSON.stringify({ id: data.id }),
+    });
+    dispatch({
+      type: "deleteComment",
+      payload: data,
+    });
+  }
+  /*const response = await fetch("/api/get-subcomments", {
       method: "POST",
       body: JSON.stringify({
         id: data.id,
@@ -55,16 +64,12 @@ const Comment = ({ data }) => {
     });
     await batchDeleteResponse.json();
     */
-    //const commentDeleteResponse =
-    await fetch("/api/delete-comment", {
-      method: "POST",
-      body: JSON.stringify({ id: data.id }),
-    });
+  //const commentDeleteResponse =
 
-    //const commentResponse = await commentDeleteResponse.json();
+  //const commentResponse = await commentDeleteResponse.json();
 
-    //TODO: (lots of places) add error handling, like
-    /*
+  //TODO: (lots of places) add error handling, like
+  /*
     https://javascript.info/async-await
     async function loadJson(url) { // (1)
   let response = await fetch(url); // (2)
@@ -80,11 +85,6 @@ const Comment = ({ data }) => {
 loadJson('no-such-user.json')
   .catch(alert); // Error: 404 (4)
     */
-    dispatch({
-      type: "deleteComment",
-      payload: data,
-    });
-  }
 
   return (
     <article className="Comment">

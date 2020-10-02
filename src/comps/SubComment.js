@@ -16,7 +16,6 @@ const SubComment = ({ sc }) => {
       body: JSON.stringify({ id: sc.id }),
     });
     const data = await promise.json();
-    console.log(data);
     dispatch({
       type: "deleteSubComment",
       payload: {
