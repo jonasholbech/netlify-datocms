@@ -14,6 +14,7 @@ collapse code blocks: https://www.npmjs.com/package/react-syntax-highlighter kan
 lazy load på forside: ✓
 lazy load på submoduler: ❓ vil jeg det?
 
+TODO: load kun det nye
 {
 allComments(filter:{createdAt:{gt:"2020-10-01 11:30:16"}}) {
 id
