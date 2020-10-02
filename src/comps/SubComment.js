@@ -20,9 +20,8 @@ const SubComment = ({ sc }) => {
     dispatch({
       type: "deleteSubComment",
       payload: {
-        scID: data.comment._id,
-        coID: data.comment.parent._id,
-        liID: data.comment.parent.list._id,
+        scID: data.id,
+        coID: data.parentid,
       },
     });
   }
