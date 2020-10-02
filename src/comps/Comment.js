@@ -50,24 +50,6 @@ const Comment = ({ data }) => {
       payload: data,
     });
   }
-  /*const response = await fetch("/api/get-subcomments", {
-      method: "POST",
-      body: JSON.stringify({
-        id: data.id,
-      }),
-    });
-    const getSCData = await response.json();
-
-    const batchDeleteResponse = await fetch("/api/delete-subcomments-for-id", {
-      method: "POST",
-      body: JSON.stringify({ ids: getSCData.subcomments }),
-    });
-    await batchDeleteResponse.json();
-    */
-  //const commentDeleteResponse =
-
-  //const commentResponse = await commentDeleteResponse.json();
-
   //TODO: (lots of places) add error handling, like
   /*
     https://javascript.info/async-await
